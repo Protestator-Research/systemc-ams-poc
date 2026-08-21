@@ -1,15 +1,15 @@
 from conan import ConanFile
 from conan.tools.cmake import CMakeToolchain, CMake, cmake_layout, CMakeDeps
 from conan.tools.env import Environment
-
+import os
+from sys import platform
 
 class SystemCAMSConan(ConanFile):
 	name = "systemc-ams"
-	version = "1.0"
 	package_type = "application"
 
 	settings = "os", "compiler", "build_type", "arch"
-	exports_sources = "*"
+	exports_sources = ["AUTHORS","INSTALL","NEWS","NOTICE","README","COPYING","LICENSE","RELEASENOTES","CMakeLists.txt", "src/*", "doc/*", "config/*"]
 	options = {"shared": [True, False], "fPIC": [True, False]}
 	default_options = {"shared": True, "fPIC": False}
 
@@ -46,7 +46,11 @@ class SystemCAMSConan(ConanFile):
 			self.options["systemc/*"].shared = False
 
 	def package(self):
-		pass
+		cmake = CMake(self)
+		cmake.install()
 
-#	def package_info(self):
-#		self.cpp_info.libs = ["sigma-delta"]
+	def package_info(self):
+		self.cpp_info.libs = ["systemc-ams","eln", "impl_lsf", "impl_tdf", "tracing", "core", "impl_ac","data_types","synchronization","linear","conservative","solvertdf","user_solver","reporting","sparse_library"]
+		self.cpp_info.builddirs.append(os.path.join("src"))
+		self.cpp_info.builddirs.append(os.path.join("src","scams","impl","analysis","ac"))
+		self.cpp_info.builddirs.append(os.path.join("src","scams","impl","core"))

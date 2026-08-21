@@ -17,7 +17,7 @@ get_target_property(DATA_TYPES_SOURCE data_types SOURCES)
 get_target_property(REPORTING_SOURCE reporting SOURCES)
 get_target_property(TRACING_SOURCE tracing SOURCES)
 
-add_library(systemc-ams 
+add_library(systemc-ams STATIC
 	systemc-ams.h
 	${IMPL_AC_SOURCE}
 	${CORE_SOURCE}

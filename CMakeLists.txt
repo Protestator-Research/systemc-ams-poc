@@ -77,7 +77,7 @@ else (DISABLE_PERFORMANCE_STATISTICS)
   message (STATUS "DISABLE_PERFORMANCE_STATISTICS = ${DISABLE_PERFORMANCE_STATISTICS}")
 endif (DISABLE_PERFORMANCE_STATISTICS)
 
-include_directories($ENV{SYSTEMC_HOME}/include)
+#include_directories($ENV{SYSTEMC_HOME}/include)
 
 macro(install_headers)
 	string(REPLACE ${CMAKE_SOURCE_DIR}/src "" REL_DIR ${CMAKE_CURRENT_SOURCE_DIR})
@@ -89,7 +89,6 @@ add_subdirectory(src)
 install(
 	FILES 
 		AUTHORS
-		ChangeLog
 		COPYING
 		INSTALL
 		LICENSE
@@ -98,4 +97,3 @@ install(
 		README
 		RELEASENOTES
 	DESTINATION .)
-	
