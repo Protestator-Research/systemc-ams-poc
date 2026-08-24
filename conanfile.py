@@ -6,7 +6,7 @@ from sys import platform
 
 class SystemCAMSConan(ConanFile):
 	name = "systemc-ams"
-	package_type = "application"
+	package_type = "library"
 
 	settings = "os", "compiler", "build_type", "arch"
 	exports_sources = ["AUTHORS","INSTALL","NEWS","NOTICE","README","COPYING","LICENSE","RELEASENOTES","CMakeLists.txt", "src/*", "doc/*", "config/*"]
@@ -50,7 +50,7 @@ class SystemCAMSConan(ConanFile):
 		cmake.install()
 
 	def package_info(self):
-		self.cpp_info.libs = ["systemc-ams","eln", "impl_lsf", "impl_tdf", "tracing", "core", "impl_ac","data_types","synchronization","linear","conservative","solvertdf","user_solver","reporting","sparse_library"]
+		self.cpp_info.libs = ["systemc-ams"]#,"eln", "impl_lsf", "impl_tdf", "tracing", "core", "impl_ac","data_types","synchronization","linear","conservative","solvertdf","user_solver","reporting","sparse_library"]
 		self.cpp_info.builddirs.append(os.path.join("src"))
 		self.cpp_info.builddirs.append(os.path.join("src","scams","impl","analysis","ac"))
 		self.cpp_info.builddirs.append(os.path.join("src","scams","impl","core"))
