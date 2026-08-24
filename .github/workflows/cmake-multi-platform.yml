@@ -1,86 +1,32 @@
-# This starter workflow is for a CMake project running on multiple platforms. There is a different starter workflow if you just want a single platform.
-# See: https://github.com/actions/starter-workflows/blob/main/ci/cmake-single-platform.yml
-name: Build SystemC-AMS
+name: Building Command
+
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
   build:
-    runs-on: ubuntu-latest # ${{ matrix.os }}
+    runs-on: ubuntu-latest
     env:
       ARTIFACTORY_URL: ${{ secrets.ARTIFACTORY_URL }}
       ARTIFACTORY_TOKEN: ${{ secrets.ARTIFACTORY_TOKEN }}
       ARTIFACTORY_USER: ${{secrets.ARTIFACTORY_USERNAME}}
-    #strategy:
-      # Set fail-fast to false to ensure that feedback is delivered for all matrix combinations. Consider changing this to true when your workflow is stable.
-      #fail-fast: false
-
-      # Set up a matrix to run the following 3 configurations:
-      # 1. <Windows, Release, latest MSVC compiler toolchain on the default runner image, default generator>
-      # 2. <Linux, Release, latest GCC compiler toolchain on the default runner image, default generator>
-      # 3. <Linux, Release, latest Clang compiler toolchain on the default runner image, default generator>
-      #
-      # To add more build types (Release, Debug, RelWithDebInfo, etc.) customize the build_type list.
-      #matrix:
-      #  os: [ubuntu-latest]
-      #  build_type: [Release]
-      #  c_compiler: [gcc, clang, cl]
-      #  include:
-      #   # - os: windows-latest
-         #   c_compiler: cl
-         #   cpp_compiler: cl
-      #    - os: ubuntu-latest
-      #      c_compiler: gcc
-      #      cpp_compiler: g++
-      #    - os: ubuntu-latest
-      #      c_compiler: clang
-      #      cpp_compiler: clang++
-      #  exclude:
-      #    - os: windows-latest
-      #      c_compiler: gcc
-      #    - os: windows-latest
-      #      c_compiler: clang
-      #    - os: ubuntu-latest
-      #      c_compiler: cl
-
     steps:
     - uses: actions/checkout@v4
-
-    #- name: Set reusable strings
-      # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
-    #  id: strings
-    #  shell: bash
-    #  run: |
-    #    echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
-
     - name: prepare runner
-      run: |
+      run: | 
         sudo apt update && sudo apt -y install make autoconf python3 python3-pip cmake libgl-dev libgl1-mesa-dev xkb-data libx11-xcb-dev libfontenc-dev libxaw7-dev libxcomposite-dev libxcursor-dev libxdamage-dev libxfixes-dev libxi-dev libxinerama-dev libxkbfile-dev libxmu-dev libxmuu-dev libxpm-dev libxrandr-dev libxres-dev libxss-dev libxtst-dev libxv-dev libxxf86vm-dev libxcb-glx0-dev libxcb-render-util0-dev libxcb-xkb-dev libxcb-icccm4-dev libxcb-image0-dev libxcb-keysyms1-dev libxcb-randr0-dev libxcb-shape0-dev libxcb-sync-dev libxcb-xfixes0-dev libxcb-xinerama0-dev libxcb-dri3-dev libxcb-cursor-dev libxcb-dri2-0-dev libxcb-dri3-dev libxcb-present-dev libxcb-composite0-dev libxcb-ewmh-dev libxcb-res0-dev libxcb-util-dev uuid-dev
         sudo pip install --ignore-installed --upgrade conan
         conan profile detect
         conan remote add protestator-conan $ARTIFACTORY_URL
         conan remote login -p $ARTIFACTORY_TOKEN protestator-conan $ARTIFACTORY_USER
         conan remote remove conancenter
-
-    - name: Configure CMake
-      # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
-      # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
+    - name: prepare dependencies
       run: |
-        mkdir build && cd build
-        conan install .. --build missing
-
-    - name: Build
-      # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
+       mkdir build && cd build
+       conan install .. --build missing
+    - name: build sysmlv2lib
       run: |
+        ls -al
         cd build
         conan build .. --version=wip
-
-#    - name: Test
-#      working-directory: ${{ steps.strings.outputs.build-output-dir }}
-#      # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
-#      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-#      run: ctest --build-config ${{ matrix.build_type }}
